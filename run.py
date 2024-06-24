@@ -21,9 +21,9 @@ async def run() -> None:
 
 def onstartup():
     print('Bot started!')
+    print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     keep_alive()
     asyncio.run(run())
-    print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def shutdown():
     print('Bot stopped!')
