@@ -66,7 +66,7 @@ async def send_data(request: Request):
         await base.edit_gift(title, price, giftType, description, links, id_gift)
 
 def start():
-    uvicorn.run("my_site:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("my_site:app", host="0.0.0.0", port=os.environ['PORT'], reload=False)
 
 def keep_alive():
     t = Thread(target=start)
