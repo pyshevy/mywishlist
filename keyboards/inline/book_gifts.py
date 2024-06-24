@@ -120,7 +120,7 @@ async def admin_kb():
         kb.append(InlineKeyboardButton(text=f"{gift[1]} {'🔒' if gift[-1] != 0 else ''}", callback_data=f"APF_{gift[0]}"))
 
     kb.append(InlineKeyboardButton(text="----------------", callback_data="OG_null"))
-    kb.append(InlineKeyboardButton(text=f"Добавить📝", web_app=WebAppInfo(url=f'https://shevskii.pythonanywhere.com/form?task=add&id_gift={count+1}')))
+    kb.append(InlineKeyboardButton(text=f"Добавить📝", web_app=WebAppInfo(url=f'https://mywishlist-t9ny.onrender.com/form?task=add&id_gift={count+1}')))
     kb.append(InlineKeyboardButton(text="В главное меню🏠", callback_data="OG_home"))
 
     builder.row(*kb, width=1)
@@ -136,7 +136,7 @@ def open_gift_admin(id_gift, links, name, price, desc, price_segment):
 
         kb.append(InlineKeyboardButton(text="----------------", callback_data="OG_null"))
 
-    kb.append(InlineKeyboardButton(text="Изменить✏️", web_app=WebAppInfo(url=f"https://shevskii.pythonanywhere.com/form?task=edit&title={name}&price={price}&description={desc}&price_segment={price_segment}&id_gift={id_gift}")))
+    kb.append(InlineKeyboardButton(text="Изменить✏️", web_app=WebAppInfo(url=f"https://mywishlist-t9ny.onrender.com/form?task=edit&title={name}&price={price}&description={desc}&price_segment={price_segment}&id_gift={id_gift}")))
     kb.append(InlineKeyboardButton(text="Удалить🗑", callback_data=f"APD_delete_{id_gift}"))
     kb.append(InlineKeyboardButton(text="В главное меню🏠", callback_data="OG_home"))
 
