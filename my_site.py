@@ -73,5 +73,7 @@ def start():
 
 def keep_alive():
     print(os.path.dirname(os.path.abspath(__file__)))
+    print('1' + os.listdir(os.path.dirname(os.path.abspath(__file__))))
+    print("2" + os.listdir('.'))
     t = Thread(target=start)
     t.start()
