@@ -2,6 +2,7 @@ import asyncio
 
 from loader import bot, dp
 from my_site import keep_alive
+import os
 
 from handlers import (
     start_router,
@@ -22,6 +23,7 @@ def onstartup():
     print('Bot started!')
     keep_alive()
     asyncio.run(run())
+    print(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def shutdown():
     print('Bot stopped!')
