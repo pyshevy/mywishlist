@@ -7,8 +7,11 @@ from threading import Thread
 
 from loader import base
 
+main_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(main_dir)
+
 app = FastAPI()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="{main_dir}/templates")
 
 @app.get('/')
 async def index():
