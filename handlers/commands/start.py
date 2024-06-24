@@ -28,11 +28,11 @@ async def start(message: Message, state: FSMContext):
 @router.callback_query(F.data.startswith('docs'), Message_id.message_id)
 async def conf_docs(call_data: CallbackQuery, state: FSMContext):
     message_id = await state.get_data()
-    request = call_data.data.removeprefix('docs')
+    request = call_data.data.removeprefix('docs_')
 
     await call_data.bot.delete_message(chat_id=call_data.message.chat.id, message_id=message_id.get('message_id'))
 
-    if int(call_data.data):
+    if int(request):
         await base.add_user(
             id=call_data.from_user.id,
             username=call_data.from_user.username,
