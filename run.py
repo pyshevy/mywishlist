@@ -29,5 +29,5 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    dp.startup.register(onstartup())
-    dp.shutdown.register(shutdown())
+    dp.startup.register(onstartup)
+    dp.shutdown.register(shutdown)
