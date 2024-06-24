@@ -72,5 +72,6 @@ def start():
     uvicorn.run("my_site:app", host="0.0.0.0", port=int(os.environ['PORT']), reload=False)
 
 def keep_alive():
+    print(os.path.dirname(os.path.abspath(__file__)))
     t = Thread(target=start)
     t.start()
