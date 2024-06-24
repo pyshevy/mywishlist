@@ -11,7 +11,7 @@ from loader import base
 main_dir = os.path.dirname(os.path.abspath(__file__))
 
 app = FastAPI()
-templates = Jinja2Templates(directory="{main_dir}/templates")
+templates = Jinja2Templates(directory=f"{main_dir}/templates")
 
 @app.get('/')
 async def index():
@@ -72,8 +72,5 @@ def start():
     uvicorn.run("my_site:app", host="0.0.0.0", port=int(os.environ['PORT']), reload=False)
 
 def keep_alive():
-    print(os.path.dirname(os.path.abspath(__file__)))
-    print('&'.join(os.listdir(os.path.dirname(os.path.abspath(__file__)))))
-    print('&'.join(os.listdir('.')))
     t = Thread(target=start)
     t.start()
