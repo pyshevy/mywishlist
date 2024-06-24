@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Form</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .form-container h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            align-items: center;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="hidden"],
+        .form-container select {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #e7f3ff;
+            width: 93%;
+        }
+        .form-container select {
+            width: 96%;
+        }
+        .form-container button {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: white;
+        }
+        .form-container .button {
+            background-color: #007bff;
+            width: 80%;
+        }
+        .form-container .remove-button {
+            background-color: #dc3545;
+            width: 60px;
+        }
+        .form-container .add-link-button {
+            background-color: #28a745;
+            width: 60%;
+        }
+        .form-container .link-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        .form-container .link-wrapper input[type="text"] {
+            width: calc(100% - 60px);
+        }
+        .form-container textarea {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            background-color: #e7f3ff;
+            width: 93%;
+            resize: vertical;
+        }
+        .form-container .error {
+            color: red;
+            text-align: center;
+        }
+        .form-container .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .form-container .buttons-container button {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function addLink(value = '') {
+            const linksDiv = document.getElementById('links');
+            const linkWrapper = document.createElement('div');
+            linkWrapper.className = 'link-wrapper';
+
+            const linkInput = document.createElement('input');
+            linkInput.type = 'text';
+            linkInput.name = 'links[]';
+            linkInput.value = value;
+            linkInput.placeholder = 'Enter link';
+
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'remove-button';
+            removeButton.innerText = '✖️';
+            removeButton.onclick = function() {
+                removeLink(linkWrapper);
+            };
+
+            linkWrapper.appendChild(linkInput);
+            linkWrapper.appendChild(removeButton);
+            linksDiv.appendChild(linkWrapper);
+        }
+
+        function removeLink(linkWrapper) {
+            const linksDiv = document.getElementById('links');
+            linksDiv.removeChild(linkWrapper);
+        }
+
+        function handleGiftTypeChange() {
+            const giftType = document.getElementById('selector').value;
+            const titleInput = document.getElementById('title-input');
+            const priceInput = document.getElementById('price-input');
+            const linksSection = document.getElementById('links-section');
+            const addLinkButton = document.querySelector('.add-link-button');
+
+            if (giftType === 'book') {
+                titleInput.placeholder = 'Название';
+                priceInput.placeholder = 'Автор';
+                linksSection.style.display = 'none';
+                addLinkButton.style.display = 'none';
+            } else {
+                titleInput.placeholder = 'Title';
+                priceInput.placeholder = 'Price';
+                linksSection.style.display = 'block';
+                addLinkButton.style.display = 'block';
+            }
+        }
+
+        window.onload = function() {
+            const linksData = {{ data.links | tojson }};
+            if (linksData.length >= 1 && linksData[0] != '') {
+                linksData.forEach(link => addLink(link));
+            }
+            tg.expand()
+            handleGiftTypeChange(); // Устанавливаем правильные плейсхолдеры при загрузке
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const tg = window.Telegram.WebApp;
+            const form = document.getElementById('dynamic-form');
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = '';
+
+            const formData = {
+                title: form.elements['title'].value,
+                description: form.elements['description'].value,
+                links: [],
+            };
+
+            let hasError = false;
+
+            if (!formData.title.trim()) {
+                hasError = true;
+                errorDiv.innerHTML += '<p>Title is required.</p>';
+            }
+
+            const giftType = form.elements['giftType'].value;
+
+            if (giftType === 'book') {
+                formData.author = form.elements['price'].value;
+
+                if (!formData.author.trim()) {
+                    hasError = true;
+                    errorDiv.innerHTML += '<p>Author is required.</p>';
+                }
+
+                formData.giftType = 'book';
+            } else {
+                formData.price = form.elements['price'].value;
+                formData.giftType = giftType;
+
+                const linkInputs = document.querySelectorAll('input[name="links[]"]');
+                linkInputs.forEach(input => formData.links.push(input.value.trim()));
+
+                if (!formData.price.trim()) {
+                    hasError = true;
+                    errorDiv.innerHTML += '<p>Price is required.</p>';
+                }
+
+                if (formData.links.some(link => !link)) {
+                    hasError = true;
+                    errorDiv.innerHTML += '<p>All links must be filled.</p>';
+                }
+            }
+
+            if (hasError) {
+                return false;
+            }
+
+            var url_string = window.location.href;
+            var url = new URL(url_string);
+            var task = url.searchParams.get("task");
+            var id_gift = url.searchParams.get("id_gift");
+
+            if (task == 'edit') {
+                formData.id_gift = id_gift;
+            } else {
+                formData.id_gift = 0;
+            }
+
+            formData.task = task;
+            console.log(formData);
+
+            const response = await fetch('/submit-form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            tg.close();
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Добавление/Редактирование подарка</h1>
+        <div id="error" class="error"></div>
+        <form id="dynamic-form" onsubmit="submitForm(event);">
+            <input id="title-input" type="text" name="title" placeholder="Title" value="{{ data.title }}"><br>
+            <input id="price-input" type="text" name="price" placeholder="Price" value="{{ data.price }}"><br>
+            <select name="giftType" id="selector" onchange="handleGiftTypeChange()">
+                <option value="book">Книги</option>
+                <option value="mini" selected>Маленькие подарочки (обычно до 1000)</option>
+                <option value="medium">Средние (до 5000)</option>
+                <option value="big">Днерожденевские (покрупнее)</option>
+            </select><br>
+            <textarea name="description" placeholder="Description">{{ data.description }}</textarea><br>
+            <div id="links-section" class="lll">
+                <div id="links"></div>
+            </div>
+            <div class="buttons-container">
+                <button type="button" class="add-link-button" onclick="addLink()">Add Link</button>
+            </div>
+            <div class="buttons-container">
+                <button type="submit" class="button">Submit</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var param = url.searchParams.get("price_segment");
+        var select = document.getElementById("selector");
+
+        if (param) {
+            select.value = param;
+            handleGiftTypeChange();
+        }
+    </script>
+</body>
+</html>
