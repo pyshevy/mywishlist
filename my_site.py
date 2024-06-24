@@ -8,8 +8,7 @@ from threading import Thread
 
 from loader import base
 
-main_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(main_dir)
+main_dir = os.path.dirname(os.path.abspath(__file__))
 
 app = FastAPI()
 templates = Jinja2Templates(directory="{main_dir}/templates")
