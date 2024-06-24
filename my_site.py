@@ -56,17 +56,27 @@ async def send_data(request: Request):
 
     print(result)
 
-    # Закомментированный код для работы с базой данных
-    path = os.path.dirname(os.path.abspath(__file__))
-    path = path.removesuffix('\\sit')
-
     links = '|'.join(links)
 
     if task == 'add':
-        await base.add_gift(id_gift, title, price, giftType, description, links)
+        await base.add_gift(
+            id=id_gift,
+            title=title,
+            price=price,
+            price_segment=giftType,
+            description=description,
+            links=links
+        )
 
     elif task == 'edit':
-        await base.edit_gift(title, price, giftType, description, links, id_gift)
+        await base.edit_gift(
+            new_title=title,
+            new_price=price,
+            new_price_segment=giftType,
+            new_description=description,
+            new_links=links,
+            id=id_gift
+        )
 
 def start():
     uvicorn.run("my_site:app", host="0.0.0.0", port=int(os.environ['PORT']), reload=False)
