@@ -79,7 +79,7 @@ async def send_data(request: Request):
         )
 
 def start():
-    uvicorn.run("my_site:app", host="0.0.0.0", port=int(os.environ['PORT']), reload=False)
+    uvicorn.run("my_site:app", host="0.0.0.0", port=10000, reload=False)
 
 def keep_alive():
     t = Thread(target=start)
