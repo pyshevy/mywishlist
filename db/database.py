@@ -51,16 +51,16 @@ class UserBase:
                     return row
 
     #-------------------------------------- GIFT -------------------------------------------------------------#
-    async def add_gift(self, title: str, price: str, description: str, links: list):
+    async def add_gift(self, id: str, title: str, price: str, price_segment: str, description: str, links: list):
         links = '|'.join(links)
 
         async with aiosqlite.connect(self.basename) as db:
-            await db.execute("""INSERT INTO gifts(ID, TITLE, PRICE, DESCRIPTION, LINKS) VALUES(?, ?, ?, ?, ?)""", (id, title, price, description, links))
+            await db.execute("""INSERT INTO gifts(ID, TITLE, PRICE, PRICE_SEGMENT, DESCRIPTION, LINKS, IS_BOOKED) VALUES(?, ?, ?, ?, ?, ?, ?)""", (id, title, price, price_segment, description, links, 0))
             await db.commit()
 
-    async def edit_gift(self, id: int, new_title: str, new_price: str, new_description: str, new_links: list):
+    async def edit_gift(self, id: int, new_title: str, new_price: str, new_price_segment: str, new_description: str, new_links: list):
         async with aiosqlite.connect(self.basename) as db:
-            await db.execute("""UPDATE gifts SET TITLE = ?, PRICE = ?, DESCRIPTION = ?, LINKS = ? WHERE ID = ?""", (new_title, new_price, new_description, new_links, id))
+            await db.execute("""UPDATE gifts SET TITLE = ?, PRICE = ?, PRICE_SEGMENT = ?, DESCRIPTION = ?, LINKS = ? WHERE ID = ?""", (new_title, new_price, new_price_segment, new_description, new_links, id))
             await db.commit()
 
     async def get_gift(self, id: int):
