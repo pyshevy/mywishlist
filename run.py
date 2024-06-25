@@ -23,7 +23,7 @@ async def run() -> None:
 if __name__ == '__main__':
     try:
         print('Bot started!')
-        keep_alive()
         asyncio.run(run())
+        keep_alive()
     except KeyboardInterrupt:
         print('Bot stopped!')
