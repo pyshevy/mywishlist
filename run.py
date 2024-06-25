@@ -1,7 +1,8 @@
 import asyncio
+import subprocess
+import threading
 
 from loader import bot, dp
-from my_site import keep_alive
 import os
 
 from handlers import (
@@ -19,11 +20,18 @@ async def run() -> None:
 
     await dp.start_polling(bot, )
 
+def run_fastapi():
+    command = f"uvicorn my_site:app --host 0.0.0.0 --port $PORT"
+    subprocess.run(command, shell=True)
+
 
 if __name__ == '__main__':
     try:
-        print('Bot started!')
+        fastapi_thread = threading.Thread(target=run_fastapi)
+        fastapi_thread.start()
+        print('Site started!')
+
         asyncio.run(run())
-        keep_alive()
+        print('Bot started!')
     except KeyboardInterrupt:
         print('Bot stopped!')
