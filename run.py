@@ -19,15 +19,11 @@ async def run() -> None:
 
     await dp.start_polling(bot, )
 
-def onstartup():
-    print('Bot started!')
-    keep_alive()
-    asyncio.run(run())
-
-def shutdown():
-    print('Bot stopped!')
-
 
 if __name__ == '__main__':
-    dp.startup.register(onstartup())
-    dp.shutdown.register(shutdown())
+    try:
+        print('Bot started!')
+        keep_alive()
+        asyncio.run(run())
+    except KeyboardInterrupt:
+        print('Bot stopped!')
